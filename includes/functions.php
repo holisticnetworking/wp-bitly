@@ -97,20 +97,23 @@ function wpbitly_generate_shortlink($post_id) {
 
     // Avoid creating shortlinks during an autosave
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
-        return;
+        return false;
 
     // or for revisions
     if (wp_is_post_revision($post_id))
-        return;
+        return false;
 
     // Token hasn't been verified, bail
     if (!$wpbitly->get_option('authorized'))
-        return;
+        return false;
+
+    $post_status = get_post_status($post_id);
+    $allowed_post_status = apply_filters('wpbitly_allowed_post_status',array('publish', 'draft', 'future', 'private'), $post_id, $post_status);
 
     // Verify this is a post we want to generate short links for
     if (!in_array(get_post_type($post_id), $wpbitly->get_option('post_types')) ||
-        !in_array(get_post_status($post_id), array('publish', 'draft', 'future', 'private')))
-        return;
+        !in_array($post_status, $allowed_post_status))
+        return false;
 
 
     // We made it this far? Let's get a shortlink
