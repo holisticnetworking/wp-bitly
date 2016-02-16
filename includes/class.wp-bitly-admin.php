@@ -154,7 +154,23 @@ class WP_Bitly_Admin {
 
         }
 
+		
+		// EDIT: Adding new "limit" field
+        add_settings_field('limit', '<label for="limit">' . __('Limit shortlinks to posts ', 'wp-bitly') . '</label>', '_f_settings_field_limit', 'writing', 'wpbitly_settings');
+        /**
+         * @ignore
+         */
+        function _f_settings_field_limit() {
+            
+            $wpbitly = wpbitly();
 
+            $output = '<fieldset><legend class="screen-reader-text"><span>Limit Output</span></legend>' . '<label title="limit"><input type="text" id="limit" name="wpbitly-options[limit]" value="' . $wpbitly->get_option('limit') . '"> days old.</label><br>' . '<p class="description">' . __("If you're having problems with lots of old posts getting bit links and filling your quota on Bitly, limit that here.", 'wpbitly') . ' ' . '<a href="http://wordpress.org/support/plugin/wp-bitly" title="' . __('WP Bitly support forums on WordPress.org', 'wpbitly') . '">' . __('support forums', 'wpbitly') . '</a>.</p>' . '</fieldset>';
+
+            echo $output;
+
+        }
+        
+        
         add_settings_field('debug', '<label for="debug">' . __('Debug WP Bitly', 'wp-bitly') . '</label>', '_f_settings_field_debug', 'writing', 'wpbitly_settings');
         /**
          * @ignore

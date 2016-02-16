@@ -109,7 +109,7 @@ function wpbitly_generate_shortlink($post_id) {
 
     // Verify this is a post we want to generate short links for
     if (!in_array(get_post_type($post_id), $wpbitly->get_option('post_types')) ||
-        !in_array(get_post_status($post_id), array('publish', 'draft', 'future', 'private')))
+        !in_array(get_post_status($post_id), array('publish', 'future', 'private')))
         return;
 
 
@@ -164,6 +164,13 @@ function wpbitly_get_shortlink($original, $post_id) {
         $post = get_post();
         $post_id = $post->ID;
     }
+    
+    // EDIT: limit creating bitlinks by post date:
+    $limit		= $wpbitly->get_option('limit');
+    $post_date	= strtotime(get_the_date('l, F j, Y', $post_id));
+    if(($limit > 0) && (time() - $post_date) > (86400 * $limit)) :
+    	return $original;
+    endif;
 
     $shortlink = get_post_meta($post_id, '_wpbitly', true);
 

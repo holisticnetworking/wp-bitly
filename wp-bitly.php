@@ -87,6 +87,7 @@ final class WP_Bitly {
     }
 
 
+    // EDIT: adding 'limit' option.
     /**
      * Populate WP_Bitly::$options with the configuration settings stored in 'wpbitly-options',
      * using an array of default settings as our fall back.
@@ -100,6 +101,7 @@ final class WP_Bitly {
             'oauth_token' => '',
             'post_types'  => array('post', 'page'),
             'authorized'  => false,
+            'limit'		  => 0,
             'debug'       => false,
         ));
 
