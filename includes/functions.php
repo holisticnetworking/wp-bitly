@@ -164,18 +164,18 @@ function wpbitly_get_shortlink($original, $post_id) {
         $post = get_post();
         $post_id = $post->ID;
     }
-    
-    // EDIT: limit creating bitlinks by post date:
-    $limit		= $wpbitly->get_option('limit');
-    $post_date	= strtotime(get_the_date('l, F j, Y', $post_id));
-    if(($limit > 0) && (time() - $post_date) > (86400 * $limit)) :
-    	return $original;
-    endif;
 
     $shortlink = get_post_meta($post_id, '_wpbitly', true);
 
-    if (!$shortlink)
-        $shortlink = wpbitly_generate_shortlink($post_id);
+    if (!$shortlink) :
+		// EDIT: limit creating bitlinks by post date:
+		$limit		= $wpbitly->get_option('limit');
+		$post_date	= strtotime(get_the_date('l, F j, Y', $post_id));
+		// If the limit is set and the post date is less than that many days ago, generate bitlink:
+		if(($limit > 0) && (time() - $post_date) < (86400 * $limit)) :
+			$shortlink = wpbitly_generate_shortlink($post_id);
+		endif;
+    endif;
 
     return ($shortlink) ? $shortlink : $original;
 }
